@@ -1,0 +1,42 @@
+---
+title: "Unsupervised ML"
+author: "sourabh jain"
+date: "13/11/2020"
+output: html_document
+---
+
+## Loading and exploring the data
+```{r}
+data<-read.csv("iris.csv")
+dim(data)
+summary(data)
+library(ggplot2)
+ggplot(data,aes(x=SepalLengthCm,y=SepalWidthCm,col=Species))+geom_point()
+ggplot(data,aes(x=PetalLengthCm,y=PetalWidthCm,col=Species))+geom_point()
+```
+
+
+## Finding the number of  cluster with Elbow Method
+```{r}
+data1<-data[,2:5]
+tot_wss<-c()
+for(i in 1:15)
+{
+  c1<-kmeans(data1,centers=i)
+  tot_wss[i]<-c1$tot.withinss
+}
+tot_wss
+
+plot(x=1:15, y=tot_wss,type="b",xlab="Number of Clusters",ylab="within groups sum of sqaures")
+```
+
+#### From the graph we can observe that as the number of clusters increases, the within groups sum of squares decreases. We take number of clusters as 3 as optimum cluster because it the point where the elbow occurs.
+
+## Applying K means clusters
+```{r}
+df<-data.frame(x=data$SepalLengthCm,y=data$SepalWidthCm)
+kmeansobj<-kmeans(df,centers = 3)
+plot(data$SepalLengthCm,data$SepalWidthCm,col=kmeansobj$cluster,pch=19)
+points(kmeansobj$centers,col=1:3,pch=4,cex=3,lwd=4)
+
+
